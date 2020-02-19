@@ -1,0 +1,57 @@
+﻿@page
+@model SmartNotes.LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/login.css">
+</head>
+<body>
+    <div class="main">
+        <div class="form-container">
+            <div class="logo">
+                <img src="~/images/logo.svg" alt="image for smartnotes" />
+            </div>
+            <div class="form">
+                <h3 class="form-title">Login</h3>
+                <form method="post" id="form">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" value="" placeholder="Email address" required asp-for="LoginUser.Email">
+                    </div>
+                    <div class="input-group">
+                        <label for="password" required>Password</label>
+                        <input type="password" name="password" value="" placeholder="Password" asp-for="LoginUser.Password">
+                    </div>
+
+                    <div class="remember-me">
+                        <input type="checkbox" name="checkbox">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <div class="error-message">
+                        <p>@Model.errorMessage</p>
+                    </div>
+                    <div class="input-group">
+                        <input type="submit" class="mybuttonclass purple" name="submit" value="Sign In">
+                    </div>
+                </form>
+                <hr>
+                <button name="createacct" class="mybuttonclass black" onclick="window.open('./SignUp','_self')">Create Account</button>
+                <br>
+                <div class="footer-link">
+                    <a href="#" title="Forgot your password?">Forgot your password?</a>
+                </div>
+            </div>
+
+            <div class="footer">
+                &copy; 2019 SmartNotes Technologies <span>|</span>
+                <a href="#">Your privacy</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

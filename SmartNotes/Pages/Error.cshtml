@@ -1,0 +1,70 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/404.css">
+
+</head>
+<body>
+    <div id="header">
+        <div class="content">
+            <div class="logo">
+                <a href="index.html" title="Welcome">
+                    <img src="~/images/logo.svg" alt="image for smartnotes" />
+                </a>
+            </div>
+            <div class="nav">
+                <a asp-page="./Login" title="Login">
+                    Login
+                </a>
+                <a asp-page="./SignUp" title="Sign Up">
+                    Sign Up
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div class="section-jumbotron">
+            <div class="content">
+                <h1>Whoops!</h1>
+                <div class="mobile-friendly">
+                    <img src="~/images/404-graphic.png" alt="mobile-friendly" />
+                </div>
+                <h1>We couldn't find what you're looking for.</h1>
+                <div class="return">
+                    <a asp-page="./Index" title="Return to homepage">
+                        Return to homepage
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <hr>
+        <div class="content">
+            <div class="logo">
+                <a asp-page="./Index" title="Try it!">
+                    <img src="~/images/footerlogo.svg" alt="image for smartnotes" />
+                </a>
+            </div>
+            <div class="nav">
+                <div class="firstline">
+                    <label>&copy; 2019 SmartNotes Technologies <span>|</span></label>
+                    <a href="#" title="Security">&nbsp;Security <span>|</span></a>
+                    <a href="#" title="Your privacy">&nbsp;Your Privacy <span>|</span></a>
+                    <a href="#" title="Terms" class="terms">&nbsp;Terms</a>
+                </div>
+                <div class="secondline">
+                    SmartNotes was created using SmartNotes
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="416px" height="497px" viewBox="0 0 416 497" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 53.2 (72643) - https://sketchapp.com -->
+    <title>FDD4174A-9F2C-482C-9D8D-1330EF462CCB</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="344" height="443" rx="12"></rect>
+        <filter x="-6.8%" y="-4.9%" width="113.7%" height="110.6%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0948699738 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-4" x="0" y="0" width="344" height="443" rx="12"></rect>
+        <filter x="-6.8%" y="-4.9%" width="113.7%" height="110.6%" filterUnits="objectBoundingBox" id="filter-6">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0948699738 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-7" x="0" y="0" width="344" height="443" rx="12"></rect>
+        <filter x="-6.8%" y="-4.9%" width="113.7%" height="110.6%" filterUnits="objectBoundingBox" id="filter-9">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0948699738 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="notes_img">
+            <g opacity="0.699999988" transform="translate(36.000000, 27.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Rectangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                    <use fill="#4C3AC3" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <rect id="Rectangle" fill="#CFC7FF" fill-rule="evenodd" mask="url(#mask-2)" x="43" y="48" width="208" height="125" rx="10"></rect>
+                <text id="Notes-title-here" font-family="Roboto-Bold, Roboto" font-size="36" font-weight="bold" line-spacing="33" fill="#FFFFFF">
+                    <tspan x="44" y="246">Notes title here</tspan>
+                </text>
+                <text id="Lorem-ipsum-dolor-si" font-family="Roboto-Regular, Roboto" font-size="18" font-weight="normal" line-spacing="25" fill="#A398ED">
+                    <tspan x="44" y="298">Lorem ipsum dolor sit amet, </tspan>
+                    <tspan x="44" y="323">consectetur adipiscing elit, </tspan>
+                    <tspan x="44" y="348">do eiusmod tempor incididunt </tspan>
+                    <tspan x="44" y="373">ut labore et dolore magna...</tspan>
+                </text>
+                <path d="M210.376144,59.751 L85.4638558,59.751 C84.3352386,59.751 83.42,60.6680731 83.42,61.7998675 L83.42,159.702133 C83.42,160.833927 84.3352386,161.751 85.4638558,161.751 L210.376144,161.751 C211.505579,161.751 212.42,160.833927 212.42,159.702133 L212.42,61.7998675 C212.42,60.6680731 211.505579,59.751 210.376144,59.751 Z M199.42,145.751 L171.437904,116.71734 C171.128647,116.397299 170.622848,116.376506 170.289176,116.670863 L150.881241,133.785531 L126.07473,103.183465 C125.913591,102.983694 125.677986,102.869539 125.411455,102.875247 C125.15469,102.880547 124.915015,103.004079 124.761607,103.210373 L95.42,142.656995 L95.42,72.751 L199.42,72.751 L199.42,145.751 L199.42,145.751 Z" id="Shape" fill="#4C3AC3" fill-rule="nonzero"></path>
+                <path d="M170.999796,106 C176.51909,106 181,101.523398 181,96.0004076 C181,90.4790478 176.51909,86 170.999796,86 C165.476018,86 161,90.4790478 161,96.0004076 C161,101.52299 165.476425,106 170.999796,106 Z" id="Path" fill="#4C3AC3" fill-rule="nonzero"></path>
+            </g>
+            <g opacity="0.600000024" transform="translate(208.000000, 248.500000) rotate(-10.000000) translate(-208.000000, -248.500000) translate(36.000000, 27.000000)">
+                <mask id="mask-5" fill="white">
+                    <use xlink:href="#path-4"></use>
+                </mask>
+                <g id="Rectangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-4"></use>
+                    <use fill="#4C3AC3" fill-rule="evenodd" xlink:href="#path-4"></use>
+                </g>
+                <rect id="Rectangle" fill="#CFC7FF" fill-rule="evenodd" mask="url(#mask-5)" x="43" y="48" width="208" height="125" rx="10"></rect>
+                <text id="Notes-title-here" font-family="Roboto-Bold, Roboto" font-size="36" font-weight="bold" line-spacing="33" fill="#FFFFFF">
+                    <tspan x="44" y="246">Notes title here</tspan>
+                </text>
+                <text id="Lorem-ipsum-dolor-si" font-family="Roboto-Regular, Roboto" font-size="18" font-weight="normal" line-spacing="25" fill="#A398ED">
+                    <tspan x="44" y="298">Lorem ipsum dolor sit amet, </tspan>
+                    <tspan x="44" y="323">consectetur adipiscing elit, </tspan>
+                    <tspan x="44" y="348">do eiusmod tempor incididunt </tspan>
+                    <tspan x="44" y="373">ut labore et dolore magna...</tspan>
+                </text>
+                <path d="M210.376144,59.751 L85.4638558,59.751 C84.3352386,59.751 83.42,60.6680731 83.42,61.7998675 L83.42,159.702133 C83.42,160.833927 84.3352386,161.751 85.4638558,161.751 L210.376144,161.751 C211.505579,161.751 212.42,160.833927 212.42,159.702133 L212.42,61.7998675 C212.42,60.6680731 211.505579,59.751 210.376144,59.751 Z M199.42,145.751 L171.437904,116.71734 C171.128647,116.397299 170.622848,116.376506 170.289176,116.670863 L150.881241,133.785531 L126.07473,103.183465 C125.913591,102.983694 125.677986,102.869539 125.411455,102.875247 C125.15469,102.880547 124.915015,103.004079 124.761607,103.210373 L95.42,142.656995 L95.42,72.751 L199.42,72.751 L199.42,145.751 L199.42,145.751 Z" id="Shape" fill="#4C3AC3" fill-rule="nonzero"></path>
+                <path d="M170.999796,106 C176.51909,106 181,101.523398 181,96.0004076 C181,90.4790478 176.51909,86 170.999796,86 C165.476018,86 161,90.4790478 161,96.0004076 C161,101.52299 165.476425,106 170.999796,106 Z" id="Path" fill="#4C3AC3" fill-rule="nonzero"></path>
+            </g>
+            <g opacity="0.900000036" transform="translate(208.000000, 248.500000) rotate(10.000000) translate(-208.000000, -248.500000) translate(36.000000, 27.000000)">
+                <mask id="mask-8" fill="white">
+                    <use xlink:href="#path-7"></use>
+                </mask>
+                <g id="Rectangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-9)" xlink:href="#path-7"></use>
+                    <use fill="#4C3AC3" fill-rule="evenodd" xlink:href="#path-7"></use>
+                </g>
+                <rect id="Rectangle" fill="#CFC7FF" fill-rule="evenodd" mask="url(#mask-8)" x="43" y="48" width="208" height="125" rx="10"></rect>
+                <text id="Notes-title-here" font-family="Roboto-Bold, Roboto" font-size="36" font-weight="bold" line-spacing="33" fill="#FFFFFF">
+                    <tspan x="44" y="246">Notes title here</tspan>
+                </text>
+                <text id="Lorem-ipsum-dolor-si" font-family="Roboto-Regular, Roboto" font-size="18" font-weight="normal" line-spacing="25" fill="#A398ED">
+                    <tspan x="44" y="298">Lorem ipsum dolor sit amet, </tspan>
+                    <tspan x="44" y="323">consectetur adipiscing elit, </tspan>
+                    <tspan x="44" y="348">do eiusmod tempor incididunt </tspan>
+                    <tspan x="44" y="373">ut labore et dolore magna...</tspan>
+                </text>
+                <path d="M210.376144,59.751 L85.4638558,59.751 C84.3352386,59.751 83.42,60.6680731 83.42,61.7998675 L83.42,159.702133 C83.42,160.833927 84.3352386,161.751 85.4638558,161.751 L210.376144,161.751 C211.505579,161.751 212.42,160.833927 212.42,159.702133 L212.42,61.7998675 C212.42,60.6680731 211.505579,59.751 210.376144,59.751 Z M199.42,145.751 L171.437904,116.71734 C171.128647,116.397299 170.622848,116.376506 170.289176,116.670863 L150.881241,133.785531 L126.07473,103.183465 C125.913591,102.983694 125.677986,102.869539 125.411455,102.875247 C125.15469,102.880547 124.915015,103.004079 124.761607,103.210373 L95.42,142.656995 L95.42,72.751 L199.42,72.751 L199.42,145.751 L199.42,145.751 Z" id="Shape" fill="#4C3AC3" fill-rule="nonzero"></path>
+                <path d="M170.999796,106 C176.51909,106 181,101.523398 181,96.0004076 C181,90.4790478 176.51909,86 170.999796,86 C165.476018,86 161,90.4790478 161,96.0004076 C161,101.52299 165.476425,106 170.999796,106 Z" id="Path" fill="#4C3AC3" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

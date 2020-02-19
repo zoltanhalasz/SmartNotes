@@ -1,0 +1,726 @@
+﻿@page
+@model SmartNotes.NotesModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/css/notes.css">
+</head>
+
+<body>
+    <div id="header">
+        <div class="content">
+            <div class="logo">
+                <a asp-page="./Index" title="Welcome">
+                    <img src="~/images/logo.svg" alt="image for smartnotes" />
+                </a>
+            </div>
+            <input type="text" name="search" placeholder="Search..." id="search" onkeypress="searchString()">
+            <div class="styled-select">
+                <select name="order" onchange="selectChange()" id="orderid">
+                    <option value="Desc">DESC</option>
+                    <option value="Asc">ASC</option>
+                </select>
+            </div>
+            <div class="nav">
+                <a asp-page="./Logout" title="Logout" class="logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+    <main class="fixed-width" id="main">
+        <div>
+            Welcome @Model.LoginUserEmail!
+            <br />
+            <br />
+        </div>
+        <form id="new-note" method="post" onsubmit="submitform(event)" enctype="multipart/form-data">
+            <input type="text" name="title" id="title-input" placeholder="Title">
+            <textarea name="content" id="content-input" placeholder="Take a note"></textarea>
+            <input type="file" name="files" id="image" accept="image/*" multiple>
+            <div class="toolbox">
+                <div class="left">
+                    <i class="fas fa-palette color-picker-button" id="inputcolorpicker"></i>
+                    <label for="image">
+                        <i class="fas fa-image"></i>
+                    </label>
+
+                </div>
+                <div class="right">
+                    <input type="submit" name="submit" id="submit" value="Save note">
+                </div>
+            </div>
+        </form>
+
+        <script>
+
+
+            function getColorPickerHtml(color, noteId) {
+                if (!color) color = '#FFF';
+                const colors = [
+                    '#FFF', '#F28882', '#FBBC04', '#FFF475',
+                    '#CCFF90', '#A7FFEB', '#CBF0F8', '#AECBFA',
+                    '#D7AEFB', '#FDCFE8', '#E6C9A8', '#E8EAED',
+                ];
+
+                const colorsHtml = colors.reduce((acc, color) => {
+                    return acc + `<div style = "background-color: ${color}" 
+                            class = "color-picker-item"
+                            data-note-id=${noteId}
+                            data-color=${color}
+                            onclick="onColorClick(event)"
+                            >
+                            </div>`
+                }, '');
+                return `<div class="color-picker hidden">
+                            ${colorsHtml}
+                        </div>`;
+            }
+
+            function displayNote(noteObj, noteImageList) {
+
+                let myImagesCarousel = getCarousel(noteObj.id, noteImageList);
+                //console.log('displayNote', myImagesCarousel);
+                let color = noteObj.color;
+                return `
+                <div class="note-container">
+                    <div class="note" style="background-color: ${color}" id="${noteObj.id}">
+                        <div id="carousel${noteObj.id}">
+                            ${myImagesCarousel}
+                        </div>                    
+                        <h3 class="note-title" id="note-title-${noteObj.id}" data-title-id=${noteObj.id}>${noteObj.title}</h3>
+                        <p class="note-content" id="note-content-${noteObj.id}" data-content-id=${noteObj.id}>
+                           ${noteObj.noteText}
+                        </p>
+                        <input type="file" name="image" id="image" data-id=${noteObj.id}>
+                        <div class="toolbox">
+                            <div class="left">
+                                <i class="fas fa-pencil-alt" data-edit-id=${noteObj.id} onclick="createPopin(${noteObj.id}, '${noteObj.title}', '${noteObj.noteText}' )"></i>
+                                <i class="fas fa-palette color-picker-button" data-color-id=${noteObj.id}>${getColorPickerHtml(color, noteObj.id)}</i>
+                                <label for="image">
+                                    <i class="fas fa-image" data-img-id=${noteObj.id}></i>
+                                </label>
+                                <i class="fas fa-trash" data-delete-id=${noteObj.id} onclick="createDeleteNote(${noteObj.id})"></i>
+                            </div>
+                            <div class="right">
+                                <i class="fas fa-thumbtack" data-pin-id=${noteObj.id} onclick="pinNote(${noteObj.id})"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }
+
+            function getCarousel(noteid, noteImageList) {
+                //console.log('getCarousel', noteid, noteImageList); 
+                let myCarouselDiv = '';
+                if (!noteImageList) {
+                    myCarouselDiv = '';
+                    return myCarouselDiv;
+                }
+                let photos = ``;
+                const nrImages = noteImageList.length;
+                let photodivcontent = [];
+                for (let k = 0; k < nrImages; k++) {            
+                    photodivcontent.push(`<img class ='note-img-src' id="${noteid}-${k}" src="/Uploads/${noteImageList[k].image}" onclick="nextImage(${noteid},${k}, ${nrImages})">`);
+                    if (k > 0) {
+                        photos += `<div class="image-wrapper" id="imgwrap${noteid}-${k}" style="display: none;">
+                                        ${photodivcontent[k]}
+                               </div> 
+                        `;
+                    }
+                    else {
+                         photos += `<div class="image-wrapper" id="imgwrap${noteid}-${k}"  style="display: block;">
+                                        ${photodivcontent[k]}
+                               </div> 
+                        `;
+                    }
+           
+                }
+
+                 myCarouselDiv = `       
+                    <div class="carousel" id="mycarousel${noteid}">
+                        ${photos}</div>
+                    `;
+
+                return myCarouselDiv;
+            }
+
+            function nextImage(noteid,k, nrImages) {
+                //console.log(noteid, k, nrImages);
+                const nextImageIndex = (k + 1) % nrImages;
+                const thisImage = document.getElementById(`imgwrap${noteid}-${k}`);
+                //console.log('thisImage', thisImage);
+                thisImage.style.display = 'none';            
+                const nextImage = document.getElementById(`imgwrap${noteid}-${nextImageIndex}`);
+                //console.log('nextImage', nextImage);
+                nextImage.style.display = 'block';   
+            }
+
+
+            var myLoginUser = @Model.LoginUserID;
+
+            function getNotesForUser(userid, order, searchstring) {
+                if (!order) order = 'Desc';
+                if (!searchstring) searchstring = '';
+                searchstring = searchstring.trim();
+                const myUrl = `./api/Notes/notesbyuser/${userid}/${order}/${searchstring}`;
+                console.log(myUrl);
+                fetch(myUrl, { mode: 'no-cors' })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        }
+                    })
+                    .then(notes => {
+                        getImagesForUser(userid).then(
+                            imgList => {
+                                //console.log('files for this user:', imgList);
+                                let node = document.getElementById("noteslist");
+                                if (node) node.remove();
+                                insertNotesList(displayNotesList(notes, imgList));
+                                //showcarousel(document);
+                            }).catch(console.error)
+                    })
+            .catch(console.error);
+            }
+
+            function getImagesForUser(userid) {
+                let url = `./api/Images/imagesbyuser/${userid}`;
+                //console.log(url);
+                return fetch(url, { mode: 'no-cors' })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        }
+                    });
+                   // .then(imglist => { console.log(imglist); return imglist; }).catch(console.error);
+            }
+
+             function getImagesForNote(noteid) {
+                let url = `./api/Images/imagesbynote/${noteid}`;
+                //console.log(url);
+                return fetch(url, { mode: 'no-cors' })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        }
+                    });
+                   // .then(imglist => { console.log(imglist); return imglist; }).catch(console.error);
+            }
+
+
+            function displayNotesList(notesList, imgList) {
+                let myNoteString = '';
+                if (!notesList) return myNoteString;
+                for (let i = 0; i < notesList.length; i++) {
+                    let noteImageList = imgList.filter(x => x.noteid == notesList[i].id);
+                    myNoteString+=displayNote(notesList[i], noteImageList);
+                }
+                return myNoteString;
+            }
+
+
+
+            function insertNotesList(notesListHtml) {
+                let div = document.createElement('div');
+                div.innerHTML = notesListHtml;
+                div.id = "noteslist";
+                let element = document.getElementById("main");
+                element.appendChild(div);
+            }
+
+            function selectChange() {
+                searchString();
+            }
+
+            function searchString() {
+                let orderselect = document.getElementById("orderid");
+                const myOrder = orderselect.options[orderselect.selectedIndex].value;
+                let searchTextBox = document.getElementById("search");
+                let mySearch = searchTextBox.value;
+                if (!mySearch || mySearch === "") mySearch="(empty)"
+                //console.log(myOrder, mySearch);
+                getNotesForUser(myLoginUser, myOrder, mySearch);
+
+            }
+            const removeNote = (noteID) => {
+                nodelete();
+                    let myNoteTargeted = document.getElementById(noteID);
+                    const url = `/api/notes/${noteID}`;
+                            fetch(url, {
+                                method: 'DELETE',
+                                body: JSON.stringify({ id: noteID }),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+
+                            }).then((response) => {
+                                if (response.status === 200) {
+
+                                    console.log('note was removed from the front and backend');
+                                    myNoteTargeted.remove();
+                                }
+                                else {
+                                   // console.log('Error appeared ' + response.status + ' ' + response.statusText);
+                                    showErrorMessage('Error appeared ' + response.status + ' ' + response.statusText);
+                                    return;
+                                }
+                            });
+            }
+
+            const pinNote = (noteID) => {
+
+                console.log('pinNote');
+                    const url = `./api/Notes/pinnote/${noteID}`;
+                            fetch(url, {
+                                method: 'POST',
+                                body: JSON.stringify({ noteid: noteID }),
+                                mode: 'no-cors',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+
+                            }).then((response) => {
+                                if (response.status === 200) {
+                                    console.log(noteID + 'pinned');
+                                    searchString();
+                                }
+                                else {
+                                    showErrorMessage('Error appeared ' + response.status + ' ' + response.statusText);
+                                    return;
+                                }
+                            });
+            }
+
+
+
+            function submitform(e) {
+                //alert('form submitted');
+                    //const url = 'http://localhost:3000/api/notes';
+                   // const fileInput = document.getElementById('image');
+                e.preventDefault();
+                const titleInput = document.querySelector('#title-input');
+                const contentInput = document.querySelector('#content-input');
+                const fileInput = document.getElementById('image');
+                const newTitle = titleInput.value;
+                const newContent = contentInput.value;
+                const fileContent = fileInput.files;
+                const formSubmit = document.getElementById('new-note');
+                const formColor = formSubmit.style.backgroundColor;
+                //console.log(fileContent);
+                if (!newTitle || !newContent) {
+                    showErrorMessage('No Title Or Content');
+                    return;
+                }
+                const newPost = { userid: myLoginUser, title: newTitle, noteText: newContent, pinned: false, color: formColor};
+                addNewPost(newPost, fileContent);
+            }
+
+            function addNewPost(newPost, fileList) {
+                const url = './api/Notes';
+                //console.log(JSON.stringify(newPost), fileList);
+                fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(newPost),
+                    //mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                        'Accept': 'application/json',
+                    }
+
+                }).then((response) => {
+                    if (response.status < 300) {
+                        response.json().then(res => {
+                            //console.log(res);
+                            const promises = [];
+                            if (fileList) {
+                                for (let k=0; k < fileList.length; k++) {
+                                    promises.push(uploadFile(fileList[k], res.id));
+                                }
+                            }
+                            Promise.all(promises).then(data => {
+                                console.log('files uploaded');
+                                emptyFormFields();
+                                //getNotesForUser(myLoginUser, "Desc","(empty)");
+                                searchString();
+                            }
+                            ).catch(err => console.error(err));
+
+
+                        });
+                    }
+                    else {
+                        showErrorMessage(response.status + ' ' + response.statusText);
+                        return;
+                    }
+                });
+            }
+
+            function emptyFormFields() {
+                //console.log('emptyFormFields');
+                const titleInput = document.getElementById('title-input');
+                titleInput.value = "";
+                const contentInput = document.getElementById('content-input');
+                contentInput.value = "";
+            }
+
+            function uploadFile(file, noteid) {
+                const url = `./api/Images/uploadimage/${noteid}`;
+                const formData = new FormData();
+                formData.append('image', file);
+
+                //console.log(file, url, formData, noteid);
+                return fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors',
+
+                });
+
+            }
+
+            const deletenoteContent = (nodeid) => {
+                return `
+                        <div class='delete-msg'>
+                            <p>Do you really want to delete this note? </p>
+                        </div>
+                        <div class='delete-inputs'>
+                           <input type="submit" name="delete-note" id="delete-note" value="Yes" onclick="removeNote(${nodeid})">
+                           <input type="button" name="cancel-note" id="cancel-note" value="No" onclick="nodelete()">
+                        </div>
+                `;
+            }
+
+
+            //creare div pentru mesaj delete note
+            const createDeleteNote = (nodeid) => {
+                const deleteContainer = document.createElement('div');
+                deleteContainer.className = 'delete';
+                deleteContainer.setAttribute('id', 'deleteid');
+                deleteContainer.innerHTML = deletenoteContent(nodeid);
+                const tmp = document.body.appendChild(deleteContainer);
+                return tmp;
+            }
+
+            const nodelete = () => {
+                let myNoteTargeted = document.getElementById("deleteid");
+                if (myNoteTargeted) {
+                    myNoteTargeted.remove();
+                }
+            }
+
+
+            const removeErrorMessage = () => {
+                //console.log('removeErrorMessage');
+                let myNoteTargeted = document.getElementById("error-msg-id");
+                if (myNoteTargeted) {
+                    myNoteTargeted.remove();
+                }
+            }
+            const errormessageContent = `
+                        <div class='error-msg-content'>
+                            <p id ='errormessagetextid'></p>
+                        </div>
+                        <div class='delete-inputs'>
+                            <input type="button" name="ok-button" id="ok-button" value="Ok" onclick="removeErrorMessage()"></input>
+                        </div>
+                `;
+        //creare div pentru mesaj eroare
+        const createErrorMessage = () => {
+            const errorContainer = document.createElement('div');
+            errorContainer.className = 'error-message-class';
+            errorContainer.setAttribute('id', 'error-msg-id');
+            errorContainer.innerHTML = errormessageContent;
+            const tmp = document.body.appendChild(errorContainer);
+            return tmp;
+        }
+
+        const showErrorMessage = (msgtext) => {
+            const errorMsgExists = document.getElementById('error-msg-id');
+            if (!errorMsgExists) {
+                const errormsgscreen = createErrorMessage();
+                const errormsgtext = document.getElementById('errormessagetextid');
+                errormsgtext.innerHTML = msgtext;
+            }
+        }
+        //creare HTML pentru mesaj popin de editare
+            function popinContent() {                
+                return `<input type="text" name="title" id="popin-title-input" placeholder="Title">
+                        <textarea name="note" id="popin-content-input" placeholder="Take a note"></textarea>
+                        <input type="file" name="image" id="popin-image"></input>
+                        <input type="checkbox" name="popin-remove-img" id="popin-remove-img">Remove existing images<br>
+                        <p id="popin-error-msg"></p>
+                        <div class="toolbox">
+                            <div class="left">
+                                <i class="fas fa-palette"></i>
+                                <label for="image">
+                                     <i class="fas fa-image"></i>
+                                </label>
+
+                            </div>
+                            <div class="right">
+                                   <input type="submit" name="submit" id="submit-popin" value="Save note" onclick = "savePopin()" ></input>
+                                   <input type="button" name="submit" id="close-popin" value="Cancel" onclick = "deletePopin()"></input>
+                            </div>
+                        </div>`;
+
+            }
+            
+        //creare div in document pentru mesaj popin de editare
+        const createPopin = (noteid, title, noteText) => {
+            //console.log('createPopin', noteid, title, noteText);
+            const popinContainer = document.createElement('div');
+            popinContainer.className = 'popin';
+            popinContainer.setAttribute('id', 'popinid');
+            popinContainer.setAttribute('data-noteid', noteid);
+            popinContainer.innerHTML = popinContent();
+            const tmp = document.body.appendChild(popinContainer);
+            const myTitle = document.getElementById('popin-title-input');
+            const myContent = document.getElementById('popin-content-input');
+            const myNote = document.getElementById(noteid);
+            title = myNote.querySelector('.note-title').innerHTML.trim();
+            noteText = myNote.querySelector('.note-content').innerHTML.trim();
+            myTitle.value = title;
+            myContent.innerHTML = noteText;
+            //console.log(tmp);
+            return tmp;
+            }
+
+            const deletePopin = () => {
+                const popinExists = document.getElementById('popinid');
+                if (popinExists) popinExists.remove();
+            }
+            const savePopin = () => {
+                const popinExists = document.getElementById('popinid');  
+                
+                const fileInput = document.getElementById('popin-image');
+                const fileContent = fileInput.files;        
+                if (popinExists && fileContent) {
+                    const noteID = popinExists.getAttribute('data-noteid');                    
+                    updateImageList(noteID, fileContent);
+                }
+                updateNoteFromPopin(fileContent);
+                deletePopin();
+            }
+
+            function updateImageList(noteID, fileContent) {
+                //console.log('updateImageList', noteID, fileContent);
+                const promises = [];
+                if (fileContent) {
+                    for (let k=0; k < fileContent.length; k++) {
+                        promises.push(uploadFile(fileContent[k], noteID));
+                    }
+                }
+                Promise.all(promises).then(data => {
+                    //console.log('files uploaded');
+                   // removeImageFromFront(noteID);
+                    createNewCarousel(noteID);                   
+                }
+                ).catch(err => console.error(err));
+          
+            }
+
+            function createNewCarousel(noteID) {
+                getImagesForNote(noteID).then((imglist) => {
+                    const myCarousel = document.getElementById(`carousel${noteID}`);
+                    myCarousel.innerHTML = getCarousel(noteID, imglist);
+                   // console.log(createNewCarousel, myCarousel.innerHTML);
+                }).catch((err) => console.error(err));
+            }
+
+            function showColorPicker() {
+                const whereToInsert = document.getElementById('inputcolorpicker');
+                if (whereToInsert) {
+                    whereToInsert.innerHTML = getColorPickerHtml("#FFF", 0);                                    
+                }
+            }
+
+            const onColorClick = (event) => {
+                //console.log(event.target);
+                chooseColor(event);
+            }
+
+            function addClickListeners() {
+                const colorPickerButtons = document.getElementsByClassName('color-picker-button');                    
+                if (!colorPickerButtons) return;
+                for (const element of colorPickerButtons) {
+                    element.addEventListener('click', () => {
+                        const colorPickerBlock = element.getElementsByClassName('color-picker');
+                        //console.log(colorPickerBlock);
+                        const colorPicker = colorPickerBlock[0];
+                        colorPicker.classList.toggle('hidden');
+                        const colors = colorPicker.getElementsByClassName('color-picker-item');
+                        //console.log(colors);
+                        if (!colorPicker.classList.contains('hidden')) {
+                            for (const color of colors) {
+                                color.addEventListener('click', onColorClick);
+                            }
+                        }
+                        else {
+                            for (const color of colors) {
+                                color.addEventListener('click', onColorClick);
+                            }
+                        }
+                    })
+                }
+            }
+
+        const chooseColor = (event) => {
+            if (event.target.classList.contains('color-picker-item')) {
+                const noteID = event.target.getAttribute('data-note-id');
+                const mycolor = event.target.getAttribute('data-color');
+                const myCurrentNote = document.getElementById(noteID);
+                const newPost = { userid: 0, title: "", noteText: "", pinned: false, color: mycolor, createdat: '2020-02-02'};
+                if (myCurrentNote) {                    
+                    //console.log(mycolor, noteID, JSON.stringify(newPost));
+                    fetch(`./api/Notes/changecolor/${noteID}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(newPost),                        
+                        headers: {
+                                    'Content-Type': 'application/json; charset=utf-8',
+                                    'Accept': 'application/json',
+                        }
+                    }).then((response) => {
+                        if (response.status === 200) {
+                            myCurrentNote.style.backgroundColor = mycolor;
+                            console.log('color changed on the front and also in the backend/sql')
+                        }
+                        else {
+                            showErrorMessage('Error appeared on server when updating color ' + response.json());
+                            return;
+                        }
+                    })
+                }
+                else {
+                    const formSubmit = document.getElementById('new-note');
+                    formSubmit.style.backgroundColor = mycolor;
+                }
+            }
+        }           
+
+        function updateNoteFromPopin(imgFileList) {
+            const myTitle = document.getElementById('popin-title-input');
+            const myContent = document.getElementById('popin-content-input');
+            const myPopin = document.getElementById('popinid');
+            const myNoteId = myPopin.getAttribute('data-noteid');
+            const myCheckbox = document.getElementById('popin-remove-img');
+            //console.log(myTitle, myContent, myNoteId);
+           // console.log(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
+            updateNote(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
+
+        }
+
+        function updateNoteOnFront(mytitle, mycontent, mynoteid) {                   
+            const myNoteTargeted = document.getElementById(mynoteid);
+            const myTitleTargeted = document.getElementById('note-title-'+mynoteid);
+            const myContentTargeted = document.getElementById('note-content-'+mynoteid);
+            //console.log(myTitleTargeted, myContentTargeted, mytitle, mycontent, mynoteid);
+            myTitleTargeted.textContent = mytitle;
+            myContentTargeted.innerHTML = mycontent;            
+        }
+
+
+        const updateNote = (mytitle, mycontent, mynoteid, ischecked) => {
+            const newPost = { userid: 0, title: mytitle, noteText: mycontent, pinned: false, color: '#FFF', createdat: '2020-02-02' };
+            //console.log('updateNote', JSON.stringify(newPost));
+      
+            fetch(`./api/Notes/updatenote/${mynoteid}`, {
+                method: 'PUT',
+                body: JSON.stringify(newPost),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                }
+            }).then((response) => {
+                if (response.status === 200) {
+                    updateNoteOnFront(mytitle, mycontent, mynoteid);
+                    console.log('Note updated on front and also in the backend/sql');
+
+                }
+                else {
+                    showErrorMessage('Error appeared on server when note ' + response.json());
+                    return;
+                }
+            });
+            if (ischecked === true) {
+                //console.log('ischecked', ischecked);
+                deleteAllImagesFromNote(mynoteid);
+            }
+        }
+
+        const deleteAllImagesFromNote = (mynoteid) => {
+            fetch(`./api/Images/deleteimagesbynote/${mynoteid}`, {
+                method: 'DELETE',
+                body: JSON.stringify({noteid: mynoteid}),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Accept': 'application/json',
+                }
+            }).then((response) => {
+                if (response.status === 200) {
+                    removeImageFromFront(mynoteid);
+                    console.log('Note updated on front and also in the backend/sql');
+
+                }
+                else {
+                    showErrorMessage('Error appeared on server on note ' + response.json());
+                    return;
+                }
+            });
+        }
+
+        function removeImageFromFront(noteid) {
+           // console.log('removeImageFromFront', noteid);
+            const myCarousel = document.getElementById(`mycarousel${noteid}`);
+            if (myCarousel) myCarousel.parentNode.removeChild(myCarousel);
+        } 
+
+</script>
+
+
+    </main>
+    <div id="footer">
+        <hr>
+        <div class="content">
+            <div class="logo">
+                <a asp-page="./Index" title="Try it!">
+                    <img src="~/images/footerlogo.svg" alt="image for smartnotes" />
+                </a>
+            </div>
+            <div class="nav">
+                <div class="firstline">
+                    <label>&copy; 2019 SmartNotes Technologies <span>|</span></label>
+                    <a href="#" title="Security">&nbsp;Security <span>|</span></a>
+                    <a href="#" title="Your privacy">&nbsp;Your Privacy <span>|</span></a>
+                    <a href="#" title="Terms" class="terms">&nbsp;Terms</a>
+                </div>
+                <div class="secondline">
+                    SmartNotes was created using SmartNotes
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        window.onload = () => {
+
+            getNotesForUser(myLoginUser, "Desc","(empty)");
+            showColorPicker();
+            addClickListeners();           
+
+        }
+
+     
+
+
+    </script>
+</body>
+</html>

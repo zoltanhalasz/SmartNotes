@@ -1,0 +1,111 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+    <div id="header">
+        <div class="content">
+            <div class="logo">
+                <a title="Welcome" asp-page="./Index">
+                    <img src="~/images/logo.svg" alt="image for smartnotes" />
+                </a>
+            </div>
+            <div class="nav">
+                <a asp-page="./Login" title="Login">
+                    Login
+                </a>
+                <a asp-page="./SignUp" title="Sign Up">
+                    Sign Up
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="main">
+        <div class="section-jumbotron">
+            <div class="content">
+                <h1>A better way to manage <span>notes.</span></h1>
+                <div class="manage-notes">
+                    <div class="smart-notes">
+                        <h3>SmartNotes it's free!</h3>
+                        <ul>
+                            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</li>
+                            <li>Excepteur sint occaecat cupidatat non proident.</li>
+                            <li>Quis autem vel eum iure reprehenderit quvol uptate lipsum &nbsp; &nbsp; naim dolor emet.</li>
+                        </ul>
+                        <div class="get-started">
+                            <a asp-page="./SignUp" title="Get Started">
+                                Get started
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mobile-friendly">
+                        <img src="~/images/mobile-friendly.svg" alt="mobile-friendly" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section-white">
+            <div class="content">
+                <h3>Join 25,000+ highly productive teams</h3>
+                <div class="picture-bar">
+
+                    <img src="~/images/google.jpg" alt="google" id="google" title="google" />
+                    <img src="~/images/airbnb.jpg" alt="airbnb" id="airbnb" title="airbnb" />
+                    <img src="~/images/nike.jpg" alt="nike" id="nike" title="nike" />
+                    <img src="~/images/samsung.jpg" alt="samsung" id="samsung" title="samsung" />
+                    <img src="~/images/uber.jpg" alt="uber" id="uber" title="uber" />
+
+                </div>
+                <div class="manage-notes">
+                    <div class="smart-notes2">
+                        <h3>Capture ideas.</h3>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            <br> <br>
+                            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        </p>
+                        <div class="login-now">
+                            <a asp-page="./Login" title="Login now">
+                                Login Now
+                            </a>
+                        </div>
+                    </div>
+                    <div class="notes-image">
+                        <img src="~/images/notes-img.svg" alt="notes-image" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <hr>
+        <div class="content">
+            <div class="logo">
+                <a href="index.html" title="Try it!">
+                    <img src="images/footerlogo.svg" alt="image for smartnotes" />
+                </a>
+            </div>
+            <div class="nav">
+                <div class="firstline">
+                    <label>&copy; 2019 SmartNotes Technologies <span>|</span></label>
+                    <a href="#" title="Security">&nbsp;Security <span>|</span></a>
+                    <a href="#" title="Your privacy">&nbsp;Your Privacy <span>|</span></a>
+                    <a href="#" title="Terms" class="terms">&nbsp;Terms</a>
+                </div>
+                <div class="secondline">
+                    SmartNotes was created using SmartNotes
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
