@@ -612,6 +612,10 @@
             const myCheckbox = document.getElementById('popin-remove-img');
             //console.log(myTitle, myContent, myNoteId);
            // console.log(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
+            if (myTitle.value.trim()==="" || myContent.value.trim()==="") {
+                showErrorMessage('Title or Content is missing!');
+                return;
+            }
             updateNote(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
 
         }

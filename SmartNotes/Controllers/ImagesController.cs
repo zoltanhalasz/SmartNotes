@@ -63,7 +63,7 @@ namespace SmartNotes.Controllers
 
         public async Task<ActionResult<List<Images>>> GetImagesByUser(int userid)
         {
-            var images =  _context.Images.ToList();
+            var images =  await _context.Images.ToListAsync();
 
                 if (images == null)
                 {
@@ -124,36 +124,47 @@ namespace SmartNotes.Controllers
         public async Task<ActionResult<Images>> PostUpload( int noteid, IFormFile image)
         {
 
-            if (image != null && noteid!=0 && image.Length > 0)
+            if (image != null && noteid!=0 && image.Length > 0 && image.Length < 500000)
             {                 
-                        //Getting FileName
-                        var fileName = Path.GetFileName(image.FileName);
+                try
+                {
 
-                        //Assigning Unique Filename (Guid)
-                        var myUniqueFileName = Convert.ToString(Guid.NewGuid());
+                    var fileName = Path.GetFileName(image.FileName);
 
-                        //Getting file Extension
-                        var fileExtension = Path.GetExtension(fileName);
+                    //Assigning Unique Filename (Guid)
+                    var myUniqueFileName = Convert.ToString(Guid.NewGuid());
 
-                        // concatenating  FileName + FileExtension
-                        var newFileName = String.Concat(myUniqueFileName, fileExtension);
+                    //Getting file Extension
+                    var fileExtension = Path.GetExtension(fileName);
 
-                        // Combines two strings into a path.
-                        var filepath =
-                        new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads")).Root + $@"\{newFileName}";
+                    // concatenating  FileName + FileExtension
+                    var newFileName = String.Concat(myUniqueFileName, fileExtension);
 
-                        using (FileStream fs = System.IO.File.Create(filepath))
-                        {
-                            image.CopyTo(fs);
-                            fs.Flush();
-                        }
+                    // Combines two strings into a path.
+                    var filepath =
+                    new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads")).Root + $@"\{newFileName}";
 
-                        var newImage = new Images();
-                        newImage.Image = newFileName;
-                        newImage.Noteid = noteid;
-                        _context.Images.Add(newImage);
-                        await _context.SaveChangesAsync();                 
-        
+                    using (FileStream fs = System.IO.File.Create(filepath))
+                    {
+                        image.CopyTo(fs);
+                        fs.Flush();
+                    }
+
+                    var newImage = new Images();
+                    newImage.Image = newFileName;
+                    newImage.Noteid = noteid;
+                    _context.Images.Add(newImage);
+                    await _context.SaveChangesAsync();
+
+
+                }
+
+                catch (Exception ex)
+                {                   
+                    return StatusCode(500);
+                }
+                //Getting FileName
+
 
                 var myImageList = await _context.Images.Where(x => x.Noteid == noteid).ToListAsync();
 
