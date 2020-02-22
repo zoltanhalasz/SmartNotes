@@ -8,6 +8,7 @@ using SmartNotes.Models;
 
 namespace SmartNotes
 {
+    // used for signup new users
     public class SignUpModel : PageModel
     {
         private readonly SmartNotesDBContext _context;
@@ -24,6 +25,8 @@ namespace SmartNotes
         {
             errorMessage = err;
         }
+
+        // basic email validation function
         bool IsValidEmail(string email)
         {
             try
@@ -36,14 +39,29 @@ namespace SmartNotes
                 return false;
             }
         }
+
+        bool IsExistingEmail(string email)
+        {
+            return _context.Users.Any(x => x.Email == email);
+        }
+
+        // posting the form on the SignUp page.
         public async Task<IActionResult> OnPost()
         {
+            newUser.Email = newUser.Email.Trim();
+
             if (!IsValidEmail(newUser.Email))
             {
                 errorMessage = "Use a valid email address!";
                 return RedirectToPage("./SignUp", new { err  =  errorMessage});
             }
-                       
+
+            if (IsExistingEmail(newUser.Email))
+            {
+                errorMessage = "This Email Address has already been used!";
+                return RedirectToPage("./SignUp", new { err = errorMessage });
+            }
+
             if (newUser.Password!=newUser.Password2)
             {
                 errorMessage = "The passwords do not match!";
@@ -56,8 +74,9 @@ namespace SmartNotes
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
-            {
-                errorMessage = "Error with signup. Please use another email address.";
+            {   
+                // error message is generated and page redirected
+                errorMessage = "Error with signup. Please try again later.";
                 return RedirectToPage("./SignUp", new { err = errorMessage });
             }
 

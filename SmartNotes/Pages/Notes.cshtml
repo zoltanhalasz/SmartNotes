@@ -56,10 +56,9 @@
                 </div>
             </div>
         </form>
-
+        @*The javascript code repository begins*@
         <script>
-
-
+            // this one will generate the colorpicker html code
             function getColorPickerHtml(color, noteId) {
                 if (!color) color = '#FFF';
                 const colors = [
@@ -82,8 +81,8 @@
                         </div>`;
             }
 
+            // this function will generate the code for a note component, having input a note (see the Notes Class) and list of images (if the case)
             function displayNote(noteObj, noteImageList) {
-
                 let myImagesCarousel = getCarousel(noteObj.id, noteImageList);
                 //console.log('displayNote', myImagesCarousel);
                 let color = noteObj.color;
@@ -116,6 +115,7 @@
                 `;
             }
 
+            // this is a primitive carousel. by clicking on an image, the next image will appear
             function getCarousel(noteid, noteImageList) {
                 //console.log('getCarousel', noteid, noteImageList); 
                 let myCarouselDiv = '';
@@ -150,7 +150,7 @@
 
                 return myCarouselDiv;
             }
-
+            // by clicking on an image, the nextimage will be shown
             function nextImage(noteid,k, nrImages) {
                 //console.log(noteid, k, nrImages);
                 const nextImageIndex = (k + 1) % nrImages;
@@ -162,9 +162,10 @@
                 nextImage.style.display = 'block';   
             }
 
-
+            // the javascript code will take the Page variable LoginUserID (se NotesModel class)
             var myLoginUser = @Model.LoginUserID;
 
+            // fetching all (list of) notes for this user, fills in the page with the user's notes using the ordering and searching
             function getNotesForUser(userid, order, searchstring) {
                 if (!order) order = 'Desc';
                 if (!searchstring) searchstring = '';
@@ -190,6 +191,7 @@
             .catch(console.error);
             }
 
+            // returns a promise with all images by user
             function getImagesForUser(userid) {
                 let url = `./api/Images/imagesbyuser/${userid}`;
                 //console.log(url);
@@ -201,7 +203,7 @@
                     });
                    // .then(imglist => { console.log(imglist); return imglist; }).catch(console.error);
             }
-
+            // returns a promise with all images by note
              function getImagesForNote(noteid) {
                 let url = `./api/Images/imagesbynote/${noteid}`;
                 //console.log(url);
@@ -214,7 +216,7 @@
                    // .then(imglist => { console.log(imglist); return imglist; }).catch(console.error);
             }
 
-
+            // takes all notes (array) by user and images by user and transforms them as a big html piece
             function displayNotesList(notesList, imgList) {
                 let myNoteString = '';
                 if (!notesList) return myNoteString;
@@ -225,8 +227,7 @@
                 return myNoteString;
             }
 
-
-
+            // inserts div noteslist and then the html with all notes by user
             function insertNotesList(notesListHtml) {
                 let div = document.createElement('div');
                 div.innerHTML = notesListHtml;
@@ -235,10 +236,12 @@
                 element.appendChild(div);
             }
 
+            // action for search box at the top of the page
             function selectChange() {
                 searchString();
             }
 
+            // takes the text from search, and generates list of notes by search term
             function searchString() {
                 let orderselect = document.getElementById("orderid");
                 const myOrder = orderselect.options[orderselect.selectedIndex].value;
@@ -249,6 +252,8 @@
                 getNotesForUser(myLoginUser, myOrder, mySearch);
 
             }
+
+            // removes html node and also from back-end data
             const removeNote = (noteID) => {
                 nodelete();
                     let myNoteTargeted = document.getElementById(noteID);
@@ -274,9 +279,9 @@
                             });
             }
 
+            //this function will pin/unpin a note
             const pinNote = (noteID) => {
-
-                console.log('pinNote');
+                //console.log('pinNote');
                     const url = `./api/Notes/pinnote/${noteID}`;
                             fetch(url, {
                                 method: 'POST',
@@ -299,11 +304,8 @@
             }
 
 
-
-            function submitform(e) {
-                //alert('form submitted');
-                    //const url = 'http://localhost:3000/api/notes';
-                   // const fileInput = document.getElementById('image');
+            // main form on the page for submitting the note
+            function submitform(e) {          
                 e.preventDefault();
                 const titleInput = document.querySelector('#title-input');
                 const contentInput = document.querySelector('#content-input');
@@ -320,8 +322,9 @@
                 }
                 const newPost = { userid: myLoginUser, title: newTitle, noteText: newContent, pinned: false, color: formColor};
                 addNewPost(newPost, fileContent);
+                formSubmit.style.backgroundColor = '#FFF';
             }
-
+            // the handler of fetch and other operations to post a new Note on the server
             function addNewPost(newPost, fileList) {
                 const url = './api/Notes';
                 //console.log(JSON.stringify(newPost), fileList);
@@ -351,8 +354,6 @@
                                 searchString();
                             }
                             ).catch(err => console.error(err));
-
-
                         });
                     }
                     else {
@@ -369,22 +370,20 @@
                 const contentInput = document.getElementById('content-input');
                 contentInput.value = "";
             }
-
+            // promise used to upload an image for a particular note
             function uploadFile(file, noteid) {
                 const url = `./api/Images/uploadimage/${noteid}`;
                 const formData = new FormData();
                 formData.append('image', file);
-
                 //console.log(file, url, formData, noteid);
                 return fetch(url, {
                     method: 'POST',
                     body: formData,
                     mode: 'no-cors',
-
                 });
 
             }
-
+            // warning message html content when the user wants to delete an existing note
             const deletenoteContent = (nodeid) => {
                 return `
                         <div class='delete-msg'>
@@ -398,7 +397,7 @@
             }
 
 
-            //creare div pentru mesaj delete note
+            //create div for warning message used for delete note - yes or no
             const createDeleteNote = (nodeid) => {
                 const deleteContainer = document.createElement('div');
                 deleteContainer.className = 'delete';
@@ -408,6 +407,7 @@
                 return tmp;
             }
 
+            // if the answer for deletion was yes, the note will be removed from the html
             const nodelete = () => {
                 let myNoteTargeted = document.getElementById("deleteid");
                 if (myNoteTargeted) {
@@ -415,7 +415,7 @@
                 }
             }
 
-
+            // removing the error message from DOM
             const removeErrorMessage = () => {
                 //console.log('removeErrorMessage');
                 let myNoteTargeted = document.getElementById("error-msg-id");
@@ -423,6 +423,8 @@
                     myNoteTargeted.remove();
                 }
             }
+
+            // html content for error message 
             const errormessageContent = `
                         <div class='error-msg-content'>
                             <p id ='errormessagetextid'></p>
@@ -431,25 +433,25 @@
                             <input type="button" name="ok-button" id="ok-button" value="Ok" onclick="removeErrorMessage()"></input>
                         </div>
                 `;
-        //creare div pentru mesaj eroare
-        const createErrorMessage = () => {
-            const errorContainer = document.createElement('div');
-            errorContainer.className = 'error-message-class';
-            errorContainer.setAttribute('id', 'error-msg-id');
-            errorContainer.innerHTML = errormessageContent;
-            const tmp = document.body.appendChild(errorContainer);
-            return tmp;
-        }
-
-        const showErrorMessage = (msgtext) => {
-            const errorMsgExists = document.getElementById('error-msg-id');
-            if (!errorMsgExists) {
-                const errormsgscreen = createErrorMessage();
-                const errormsgtext = document.getElementById('errormessagetextid');
-                errormsgtext.innerHTML = msgtext;
+            //create div for error message
+            const createErrorMessage = () => {
+                const errorContainer = document.createElement('div');
+                errorContainer.className = 'error-message-class';
+                errorContainer.setAttribute('id', 'error-msg-id');
+                errorContainer.innerHTML = errormessageContent;
+                const tmp = document.body.appendChild(errorContainer);
+                return tmp;
             }
-        }
-        //creare HTML pentru mesaj popin de editare
+            // fill the html for the div for error message
+            const showErrorMessage = (msgtext) => {
+                const errorMsgExists = document.getElementById('error-msg-id');
+                if (!errorMsgExists) {
+                    const errormsgscreen = createErrorMessage();
+                    const errormsgtext = document.getElementById('errormessagetextid');
+                    errormsgtext.innerHTML = msgtext;
+                }
+            }
+            //creates html for popin (editing a note)
             function popinContent() {                
                 return `<input type="text" name="title" id="popin-title-input" placeholder="Title">
                         <textarea name="note" id="popin-content-input" placeholder="Take a note"></textarea>
@@ -472,30 +474,31 @@
 
             }
             
-        //creare div in document pentru mesaj popin de editare
-        const createPopin = (noteid, title, noteText) => {
-            //console.log('createPopin', noteid, title, noteText);
-            const popinContainer = document.createElement('div');
-            popinContainer.className = 'popin';
-            popinContainer.setAttribute('id', 'popinid');
-            popinContainer.setAttribute('data-noteid', noteid);
-            popinContainer.innerHTML = popinContent();
-            const tmp = document.body.appendChild(popinContainer);
-            const myTitle = document.getElementById('popin-title-input');
-            const myContent = document.getElementById('popin-content-input');
-            const myNote = document.getElementById(noteid);
-            title = myNote.querySelector('.note-title').innerHTML.trim();
-            noteText = myNote.querySelector('.note-content').innerHTML.trim();
-            myTitle.value = title;
-            myContent.innerHTML = noteText;
-            //console.log(tmp);
-            return tmp;
+            //creates the div for the popin having above html content
+            const createPopin = (noteid, title, noteText) => {
+                //console.log('createPopin', noteid, title, noteText);
+                const popinContainer = document.createElement('div');
+                popinContainer.className = 'popin';
+                popinContainer.setAttribute('id', 'popinid');
+                popinContainer.setAttribute('data-noteid', noteid);
+                popinContainer.innerHTML = popinContent();
+                const tmp = document.body.appendChild(popinContainer);
+                const myTitle = document.getElementById('popin-title-input');
+                const myContent = document.getElementById('popin-content-input');
+                const myNote = document.getElementById(noteid);
+                title = myNote.querySelector('.note-title').innerHTML.trim();
+                noteText = myNote.querySelector('.note-content').innerHTML.trim();
+                myTitle.value = title;
+                myContent.innerHTML = noteText;
+                //console.log(tmp);
+                return tmp;
             }
-
+            // deletes the popin from the dom
             const deletePopin = () => {
                 const popinExists = document.getElementById('popinid');
                 if (popinExists) popinExists.remove();
             }
+            //saves the popin content (update note)
             const savePopin = () => {
                 const popinExists = document.getElementById('popinid');  
                 
@@ -505,10 +508,9 @@
                     const noteID = popinExists.getAttribute('data-noteid');                    
                     updateImageList(noteID, fileContent);
                 }
-                updateNoteFromPopin(fileContent);
-                deletePopin();
+                if (updateNoteFromPopin(fileContent)!==1) deletePopin();
             }
-
+            // if new image added, this will add it to the note
             function updateImageList(noteID, fileContent) {
                 //console.log('updateImageList', noteID, fileContent);
                 const promises = [];
@@ -525,7 +527,7 @@
                 ).catch(err => console.error(err));
           
             }
-
+            // the carousel will be rewritten
             function createNewCarousel(noteID) {
                 getImagesForNote(noteID).then((imglist) => {
                     const myCarousel = document.getElementById(`carousel${noteID}`);
@@ -533,19 +535,19 @@
                    // console.log(createNewCarousel, myCarousel.innerHTML);
                 }).catch((err) => console.error(err));
             }
-
+            // this will activate the color pickker
             function showColorPicker() {
                 const whereToInsert = document.getElementById('inputcolorpicker');
                 if (whereToInsert) {
                     whereToInsert.innerHTML = getColorPickerHtml("#FFF", 0);                                    
                 }
             }
-
+            // handler to chose a color
             const onColorClick = (event) => {
                 //console.log(event.target);
                 chooseColor(event);
             }
-
+            // handlers for click on color buttons
             function addClickListeners() {
                 const colorPickerButtons = document.getElementsByClassName('color-picker-button');                    
                 if (!colorPickerButtons) return;
@@ -570,120 +572,121 @@
                     })
                 }
             }
-
-        const chooseColor = (event) => {
-            if (event.target.classList.contains('color-picker-item')) {
-                const noteID = event.target.getAttribute('data-note-id');
-                const mycolor = event.target.getAttribute('data-color');
-                const myCurrentNote = document.getElementById(noteID);
-                const newPost = { userid: 0, title: "", noteText: "", pinned: false, color: mycolor, createdat: '2020-02-02'};
-                if (myCurrentNote) {                    
-                    //console.log(mycolor, noteID, JSON.stringify(newPost));
-                    fetch(`./api/Notes/changecolor/${noteID}`, {
-                        method: 'PUT',
-                        body: JSON.stringify(newPost),                        
-                        headers: {
-                                    'Content-Type': 'application/json; charset=utf-8',
-                                    'Accept': 'application/json',
-                        }
-                    }).then((response) => {
-                        if (response.status === 200) {
-                            myCurrentNote.style.backgroundColor = mycolor;
-                            console.log('color changed on the front and also in the backend/sql')
-                        }
-                        else {
-                            showErrorMessage('Error appeared on server when updating color ' + response.json());
-                            return;
-                        }
-                    })
+        // the act of chosing a color will update the color un the front-end of the note and saves the color in the back-end
+            const chooseColor = (event) => {
+                if (event.target.classList.contains('color-picker-item')) {
+                    const noteID = event.target.getAttribute('data-note-id');
+                    const mycolor = event.target.getAttribute('data-color');
+                    const myCurrentNote = document.getElementById(noteID);
+                    const newPost = { userid: 0, title: "", noteText: "", pinned: false, color: mycolor, createdat: '2020-02-02'};
+                    if (myCurrentNote) {                    
+                        //console.log(mycolor, noteID, JSON.stringify(newPost));
+                        fetch(`./api/Notes/changecolor/${noteID}`, {
+                            method: 'PUT',
+                            body: JSON.stringify(newPost),                        
+                            headers: {
+                                        'Content-Type': 'application/json; charset=utf-8',
+                                        'Accept': 'application/json',
+                            }
+                        }).then((response) => {
+                            if (response.status === 200) {
+                                myCurrentNote.style.backgroundColor = mycolor;
+                                console.log('color changed on the front and also in the backend/sql')
+                            }
+                            else {
+                                showErrorMessage('Error appeared on server when updating color ' + response.json());
+                                return;
+                            }
+                        })
+                    }
+                    else {
+                        const formSubmit = document.getElementById('new-note');
+                        formSubmit.style.backgroundColor = mycolor;
+                    }
                 }
-                else {
-                    const formSubmit = document.getElementById('new-note');
-                    formSubmit.style.backgroundColor = mycolor;
+            }           
+            // will update the content of the note after saving the popin
+            function updateNoteFromPopin() {
+                const myTitle = document.getElementById('popin-title-input');
+                const myContent = document.getElementById('popin-content-input');
+                const myPopin = document.getElementById('popinid');
+                const myNoteId = myPopin.getAttribute('data-noteid');
+                const myCheckbox = document.getElementById('popin-remove-img');
+                //console.log(myTitle, myContent, myNoteId);
+               // console.log(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
+
+                return updateNote(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
+            }
+            // only the front-end part of the note is updated here
+            function updateNoteOnFront(mytitle, mycontent, mynoteid) {                   
+                //const myNoteTargeted = document.getElementById(mynoteid);
+                const myTitleTargeted = document.getElementById('note-title-'+mynoteid);
+                const myContentTargeted = document.getElementById('note-content-'+mynoteid);
+                //console.log(myTitleTargeted, myContentTargeted, mytitle, mycontent, mynoteid);
+                myTitleTargeted.textContent = mytitle;
+                myContentTargeted.innerHTML = mycontent;            
+            }
+
+            // using a fetch with PUT, the content of the note is updated on the back-end
+            const updateNote = (mytitle, mycontent, mynoteid, ischecked) => {
+
+                if (mytitle.trim()==="" || mycontent.trim()==="") {
+                    showErrorMessage('Title or Content is missing!');
+                    return 1;
                 }
-            }
-        }           
-
-        function updateNoteFromPopin(imgFileList) {
-            const myTitle = document.getElementById('popin-title-input');
-            const myContent = document.getElementById('popin-content-input');
-            const myPopin = document.getElementById('popinid');
-            const myNoteId = myPopin.getAttribute('data-noteid');
-            const myCheckbox = document.getElementById('popin-remove-img');
-            //console.log(myTitle, myContent, myNoteId);
-           // console.log(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
-            if (myTitle.value.trim()==="" || myContent.value.trim()==="") {
-                showErrorMessage('Title or Content is missing!');
-                return;
-            }
-            updateNote(myTitle.value, myContent.value, myNoteId, myCheckbox.checked);
-
-        }
-
-        function updateNoteOnFront(mytitle, mycontent, mynoteid) {                   
-            const myNoteTargeted = document.getElementById(mynoteid);
-            const myTitleTargeted = document.getElementById('note-title-'+mynoteid);
-            const myContentTargeted = document.getElementById('note-content-'+mynoteid);
-            //console.log(myTitleTargeted, myContentTargeted, mytitle, mycontent, mynoteid);
-            myTitleTargeted.textContent = mytitle;
-            myContentTargeted.innerHTML = mycontent;            
-        }
-
-
-        const updateNote = (mytitle, mycontent, mynoteid, ischecked) => {
-            const newPost = { userid: 0, title: mytitle, noteText: mycontent, pinned: false, color: '#FFF', createdat: '2020-02-02' };
-            //console.log('updateNote', JSON.stringify(newPost));
+                const newPost = { userid: 0, title: mytitle, noteText: mycontent, pinned: false, color: '#FFF', createdat: '2020-02-02' };
+                //console.log('updateNote', JSON.stringify(newPost));
       
-            fetch(`./api/Notes/updatenote/${mynoteid}`, {
-                method: 'PUT',
-                body: JSON.stringify(newPost),
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                    'Accept': 'application/json',
+                fetch(`./api/Notes/updatenote/${mynoteid}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(newPost),
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                        'Accept': 'application/json',
+                    }
+                }).then((response) => {
+                    if (response.status === 200) {
+                        updateNoteOnFront(mytitle, mycontent, mynoteid);
+                        console.log('Note updated on front and also in the backend/sql');
+                        return 0;
+                    }
+                    else {
+                        showErrorMessage('Error appeared on server when note ' + response.json());
+                        return 0;
+                    }
+                });
+                if (ischecked === true) {
+                    //console.log('ischecked', ischecked);
+                    deleteAllImagesFromNote(mynoteid);
                 }
-            }).then((response) => {
-                if (response.status === 200) {
-                    updateNoteOnFront(mytitle, mycontent, mynoteid);
-                    console.log('Note updated on front and also in the backend/sql');
-
-                }
-                else {
-                    showErrorMessage('Error appeared on server when note ' + response.json());
-                    return;
-                }
-            });
-            if (ischecked === true) {
-                //console.log('ischecked', ischecked);
-                deleteAllImagesFromNote(mynoteid);
             }
-        }
+            // ticking the delete image will trigger the deletion of all images relative to a note
+            const deleteAllImagesFromNote = (mynoteid) => {
+                fetch(`./api/Images/deleteimagesbynote/${mynoteid}`, {
+                    method: 'DELETE',
+                    body: JSON.stringify({noteid: mynoteid}),
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                        'Accept': 'application/json',
+                    }
+                }).then((response) => {
+                    if (response.status === 200) {
+                        removeImageFromFront(mynoteid);
+                        console.log('Note updated on front and also in the backend/sql');
 
-        const deleteAllImagesFromNote = (mynoteid) => {
-            fetch(`./api/Images/deleteimagesbynote/${mynoteid}`, {
-                method: 'DELETE',
-                body: JSON.stringify({noteid: mynoteid}),
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                    'Accept': 'application/json',
-                }
-            }).then((response) => {
-                if (response.status === 200) {
-                    removeImageFromFront(mynoteid);
-                    console.log('Note updated on front and also in the backend/sql');
-
-                }
-                else {
-                    showErrorMessage('Error appeared on server on note ' + response.json());
-                    return;
-                }
-            });
-        }
-
-        function removeImageFromFront(noteid) {
-           // console.log('removeImageFromFront', noteid);
-            const myCarousel = document.getElementById(`mycarousel${noteid}`);
-            if (myCarousel) myCarousel.parentNode.removeChild(myCarousel);
-        } 
+                    }
+                    else {
+                        showErrorMessage('Error appeared on server on note ' + response.json());
+                        return;
+                    }
+                });
+            }
+            // in case of removing the images, the note will be updated on the fron by removing the carousel
+            function removeImageFromFront(noteid) {
+               // console.log('removeImageFromFront', noteid);
+                const myCarousel = document.getElementById(`mycarousel${noteid}`);
+                if (myCarousel) myCarousel.parentNode.removeChild(myCarousel);
+            } 
 
 </script>
 
@@ -712,19 +715,12 @@
     </div>
 
     <script>
-
-
         window.onload = () => {
-
+            //initialization of functions and showing the notes
             getNotesForUser(myLoginUser, "Desc","(empty)");
             showColorPicker();
             addClickListeners();           
-
         }
-
-     
-
-
     </script>
 </body>
 </html>

@@ -12,6 +12,7 @@ namespace SmartNotes
     {
         public IActionResult OnGet()
         {
+            // logoout page deleting the logged in user and redirecting to main page.
             SessionHelper.SetObjectAsJson(HttpContext.Session, "loginuser", null);
             return RedirectToPage("./Index");
         }
